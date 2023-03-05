@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 20247e29c002a5a44aab74c728151ea1
+guid: 530b4a5555cfbaa45aaca498d1507fd6
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -45,7 +45,7 @@ TextureImporter:
       213: -8525242309741115352
     second: gamePlayEkran2_13
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -105,7 +105,6 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
-  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -157,18 +156,6 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -459,10 +446,10 @@ TextureImporter:
       name: gamePlayEkran2_13
       rect:
         serializedVersion: 2
-        x: 315
-        y: 1180
+        x: 318
+        y: 1186
         width: 186
-        height: 87
+        height: 79
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -470,7 +457,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba9c9a0cdfe9b5e42ada49dba2866dd3
+      spriteID: 82800c7b94140b980800000000000000
       internalID: -8525242309741115352
       vertices: []
       indices: 
