@@ -13,6 +13,11 @@ public class Gamemanager : MonoBehaviour
     [SerializeField]
     TMP_Text meaningTxt, colorTxt;
 
+    [SerializeField]
+    TMP_Text totalPointTxt,timeTxt;
+    [SerializeField]
+    GameObject Bonus_ýmg;
+
     int randomTrueMeaning;
     int randomWrongMeaning;
 
@@ -22,12 +27,19 @@ public class Gamemanager : MonoBehaviour
     bool resultisTrue;
 
     int theNumberOfTrue;
+    int thenumberOfBonus;
+    bool bonus;
+    int point = 10;
+    int totalPoint;
+    int remainingTime;
     
 
     void Start()
     {
 
         generateRandomColor();
+        StartCoroutine(countDownRoutine());
+        remainingTime = 60;
     }
 
     void generateRandomColor()
@@ -76,13 +88,14 @@ public class Gamemanager : MonoBehaviour
     {
         if (resultisTrue)
         {
-            print("sonuç doðru");
+            
             theNumberOfTrue++;
+            PointUp();
             
         }
         else
         {
-            print("sonuc yanlýþ");
+            ReducePoint();
         }
         StartCoroutine(generateNewColorRoutine());
     }
@@ -90,13 +103,14 @@ public class Gamemanager : MonoBehaviour
     {
         if (resultisTrue)
         {
-            print("sonuç yanlýþ");
+            ReducePoint();
             
         }
         else
         {
-            print("sonuc doðru");
+            
             theNumberOfTrue++;
+            PointUp();
         }
         StartCoroutine(generateNewColorRoutine());
     }
@@ -109,6 +123,73 @@ public class Gamemanager : MonoBehaviour
         generateRandomColor();
 
 
+    }
+    void PointUp()
+    {
+        thenumberOfBonus++;
+        if (thenumberOfBonus == 5)
+        {
+            bonus = true;
+        }
+        if (bonus)
+        {
+            if (thenumberOfBonus >= 5 && thenumberOfBonus <= 10)
+            {
+                Bonus_ýmg.GetComponent<CanvasGroup>().DOFade(1, 0.4f);
+                Bonus_ýmg.GetComponent<RectTransform>().DOScale(1, 0.4f).SetEase(Ease.OutBounce);
+
+                point = thenumberOfBonus * 10;
+            }
+        }
+        if (thenumberOfBonus == 10)
+        {
+            thenumberOfBonus = 0;
+            point = 10;
+            bonus = false;
+
+            Bonus_ýmg.GetComponent<CanvasGroup>().DOFade(0, 0.2f);
+            Bonus_ýmg.GetComponent<RectTransform>().DOScale(0, 0.2f).SetEase(Ease.InBounce);
+        }
+        totalPoint += point;
+        totalPointTxt.text = totalPoint.ToString();
+    }
+    void ReducePoint()
+    {
+        thenumberOfBonus = 0;
+        point = 10;
+        bonus = false;
+
+        Bonus_ýmg.GetComponent<CanvasGroup>().DOFade(0, 0.2f);
+        Bonus_ýmg.GetComponent<RectTransform>().DOScale(0, 0.2f).SetEase(Ease.InBounce);
+        totalPoint -= 10;
+
+        if (totalPoint <= 0)
+        {
+            totalPoint = 0;
+        }
+        totalPointTxt.text = totalPoint.ToString();
+
+    }
+    IEnumerator countDownRoutine()
+    {
+        yield return new WaitForSeconds(1f);
+        remainingTime--;
+        if (remainingTime < 10)
+        {
+            timeTxt.text = "0" + remainingTime.ToString();
+        }
+        else
+        {
+            timeTxt.text = remainingTime.ToString();
+        }
+        
+
+        StartCoroutine(countDownRoutine());
+        if (remainingTime <= 0)
+        {
+            StopAllCoroutines();
+            //time is up,finish the game
+        }
     }
 
 
