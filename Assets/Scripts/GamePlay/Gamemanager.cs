@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class Gamemanager : MonoBehaviour
 {
@@ -17,6 +18,12 @@ public class Gamemanager : MonoBehaviour
     TMP_Text totalPointTxt,timeTxt;
     [SerializeField]
     GameObject Bonus_ýmg;
+    [SerializeField]
+    GameObject pausePanel,resultPanel,upperPanel,midPanel,LowerPanel;
+    [SerializeField]
+    TMP_Text tTXT, fTXT,trueResult,falseResult,resultTotalPoint;
+
+    VoiceManager VM;
 
     int randomTrueMeaning;
     int randomWrongMeaning;
@@ -27,21 +34,31 @@ public class Gamemanager : MonoBehaviour
     bool resultisTrue;
 
     int theNumberOfTrue;
+    int theNumberOfFalse;
     int thenumberOfBonus;
     bool bonus;
     int point = 10;
     int totalPoint;
     int remainingTime;
-    
 
+    public bool pausePressed;
+
+    private void Awake()
+    {
+        VM = Object.FindObjectOfType<VoiceManager>();
+    }
     void Start()
     {
-
+        pausePressed = true;
         generateRandomColor();
+       
+    }
+    public void startGame()
+    {
         StartCoroutine(countDownRoutine());
+
         remainingTime = 60;
     }
-
     void generateRandomColor()
     {
         int randomNumber = Random.Range(0, 100);
@@ -86,30 +103,40 @@ public class Gamemanager : MonoBehaviour
 
     public void truebutton()
     {
+        if (pausePressed)
+            return;
         if (resultisTrue)
         {
             
             theNumberOfTrue++;
+            VM.trueAnswer();
             PointUp();
             
         }
         else
         {
             ReducePoint();
+            VM.falseAnswer();
+            theNumberOfFalse++;
         }
         StartCoroutine(generateNewColorRoutine());
     }
     public void falsebutton()
     {
+        if(pausePressed)
+            return;
         if (resultisTrue)
         {
             ReducePoint();
+            VM.falseAnswer();
+            theNumberOfFalse++;
             
         }
         else
         {
             
             theNumberOfTrue++;
+            VM.trueAnswer();
             PointUp();
         }
         StartCoroutine(generateNewColorRoutine());
@@ -135,6 +162,7 @@ public class Gamemanager : MonoBehaviour
         {
             if (thenumberOfBonus >= 5 && thenumberOfBonus <= 10)
             {
+                VM.bonusPoint();
                 Bonus_ýmg.GetComponent<CanvasGroup>().DOFade(1, 0.4f);
                 Bonus_ýmg.GetComponent<RectTransform>().DOScale(1, 0.4f).SetEase(Ease.OutBounce);
 
@@ -170,13 +198,15 @@ public class Gamemanager : MonoBehaviour
         totalPointTxt.text = totalPoint.ToString();
 
     }
-    IEnumerator countDownRoutine()
+    public IEnumerator countDownRoutine()
     {
         yield return new WaitForSeconds(1f);
+        
         remainingTime--;
         if (remainingTime < 10)
         {
             timeTxt.text = "0" + remainingTime.ToString();
+            //rutin oluþturuklup 10 dan geri sayým yapýlacak
         }
         else
         {
@@ -188,11 +218,67 @@ public class Gamemanager : MonoBehaviour
         if (remainingTime <= 0)
         {
             StopAllCoroutines();
-            //time is up,finish the game
+            StartCoroutine(finishTheGameRoutine());
         }
     }
+    public void PauseTheGame()
+    {
+        if (!pausePressed)
+        {
+            pausePressed = true;
+            StopAllCoroutines();
+            pausePanel.GetComponent<CanvasGroup>().DOFade(1, .5f);
+            pausePanel.GetComponent<RectTransform>().DOScale(1, .5f).SetEase(Ease.OutBack);
+            tTXT.text = theNumberOfTrue.ToString();
+            fTXT.text = theNumberOfFalse.ToString();
 
 
+        }
+       
+        
+    }
+    public void ReturnTheGame()
+    {
+        if (pausePanel)
+        {
+            StartCoroutine(countDownRoutine());
+            pausePressed = false;
+
+            pausePanel.GetComponent<CanvasGroup>().DOFade(0, .5f);
+            pausePanel.GetComponent<RectTransform>().DOScale(0, .5f).SetEase(Ease.InBack);
+        }
+    }
+    void writeTheResults()
+    {
+        trueResult.text = theNumberOfTrue.ToString();
+        falseResult.text = theNumberOfFalse.ToString();
+        resultTotalPoint.text = totalPoint.ToString();
+    }
+    IEnumerator finishTheGameRoutine()
+    {
+        upperPanel.SetActive(false);
+        LowerPanel.SetActive(false);
+        midPanel.SetActive(false);
+        Bonus_ýmg.SetActive(false);
+        writeTheResults();
+
+        VM.finishTheGame();
+        
+        yield return new WaitForSeconds(.2f);
+
+        pausePressed = true;
+        resultPanel.GetComponent<CanvasGroup>().DOFade(1, .5f);
+        resultPanel.GetComponent<RectTransform>().DOScale(1, .5f).SetEase(Ease.OutBack);
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("GamePlay");
+    }
+    public void quitgame()
+    
+    {
+        Application.Quit();
+    }
 
 
 }
